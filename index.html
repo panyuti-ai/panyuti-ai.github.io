@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yu-Ting Pan</title>
+<meta name="description" content="Yu-Ting Pan, software engineer in Taiwan. I build tools that make AI check its work.">
+<style>
+  :root {
+    --paper: #f5f0e6;
+    --ink: #111;
+    --muted: #5b5750;
+    --hot: #e8401f;
+    --good: #0a7a3d;
+    --line: 3px solid var(--ink);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", "Noto Sans TC", sans-serif;
+    line-height: 1.5;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* top bar */
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; font-weight: 700; }
+  .top nav a { margin-left: 18px; text-decoration: none; border-bottom: 2px solid transparent; }
+  .top nav a:hover, .top nav a:focus-visible { border-color: var(--ink); }
+
+  /* hero */
+  .hero { position: relative; padding: 48px 0 72px; overflow: hidden; }
+  .hero .ghost {
+    position: absolute; right: -2vw; top: -40px; font-weight: 900; font-size: clamp(200px, 38vw, 460px);
+    line-height: 1; color: rgba(17,17,17,.05); pointer-events: none; user-select: none;
+  }
+  .big {
+    position: relative; margin: 0; font-weight: 900; letter-spacing: -0.045em; line-height: .9;
+    font-size: clamp(56px, 12vw, 148px);
+  }
+  .big em { font-style: normal; color: var(--hot); }
+  .tag {
+    display: inline-block; margin-top: 24px; background: var(--ink); color: var(--paper);
+    padding: 8px 14px; font-weight: 800; font-size: 18px; transform: rotate(-2deg);
+  }
+  .intro { max-width: 620px; margin-top: 28px; font-size: 19px; color: #2a2723; }
+
+  /* section heading */
+  .kicker { font-size: 13px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; margin: 0 0 12px; }
+  section { padding: 56px 0; border-top: var(--line); }
+
+  /* featured demo */
+  .feature h2 { margin: 0; font-size: clamp(36px, 6vw, 64px); font-weight: 900; letter-spacing: -0.03em; line-height: 1; }
+  .feature h2 a { text-decoration: none; }
+  .feature h2 a:hover, .feature h2 a:focus-visible { text-decoration: underline; text-decoration-thickness: 4px; }
+  .feature .lede { max-width: 680px; font-size: 18px; margin: 16px 0 28px; }
+  .demo { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: stretch; }
+  .box { border: var(--line); background: #fff; padding: 18px; min-height: 150px; }
+  .box small { display: block; font-size: 12px; font-weight: 800; letter-spacing: .16em; color: var(--muted); margin-bottom: 10px; }
+  .box p { margin: 0; font-size: clamp(22px, 3vw, 30px); font-weight: 800; line-height: 1.35; }
+  .box .s { color: var(--hot); text-decoration: line-through; text-decoration-thickness: 3px; }
+  .box .t { color: var(--good); }
+  .run {
+    align-self: center; border: var(--line); background: var(--hot); color: #fff; font: inherit; font-weight: 900;
+    font-size: 18px; padding: 14px 18px; cursor: pointer; box-shadow: 5px 5px 0 var(--ink);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .run:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--ink); }
+  .run:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
+  .run:focus-visible { outline: 4px solid var(--ink); outline-offset: 4px; }
+  #after p { opacity: .25; transition: opacity .4s; }
+  #after.done p { opacity: 1; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+  .stat { border-top: var(--line); padding-top: 12px; }
+  .stat b { display: block; font-size: clamp(34px, 5vw, 52px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
+  .stat span { color: #2a2723; font-size: 15px; }
+  .more { margin-top: 24px; font-weight: 800; }
+  .more a { margin-right: 18px; }
+
+  /* other work */
+  .work { list-style: none; margin: 0; padding: 0; }
+  .work li { display: grid; grid-template-columns: 90px 1fr 220px; gap: 20px; padding: 26px 0; border-bottom: 1px solid rgba(17,17,17,.25); align-items: baseline; }
+  .work .n { font-size: 44px; font-weight: 900; color: var(--hot); line-height: 1; }
+  .work h3 { margin: 0 0 6px; font-size: 26px; font-weight: 900; letter-spacing: -0.02em; }
+  .work h3 a { text-decoration: none; }
+  .work h3 a:hover, .work h3 a:focus-visible { text-decoration: underline; }
+  .work p { margin: 0; color: #2a2723; }
+  .work .fact { font-weight: 900; font-size: 22px; text-align: right; line-height: 1.2; }
+  .work .fact small { display: block; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .lang { font-size: 13px; font-weight: 700; color: var(--muted); margin-left: 8px; }
+
+  /* contact */
+  .contact .big { font-size: clamp(44px, 9vw, 110px); }
+  .contact a.mail { display: inline-block; margin-top: 20px; font-size: clamp(20px, 3vw, 30px); font-weight: 900; }
+  footer { padding: 28px 0 40px; font-size: 14px; color: var(--muted); }
+
+  @media (max-width: 760px) {
+    .demo { grid-template-columns: 1fr; }
+    .run { justify-self: start; }
+    .stats { grid-template-columns: 1fr; }
+    .work li { grid-template-columns: 56px 1fr; }
+    .work .fact { grid-column: 2; text-align: left; }
+    .work .n { font-size: 32px; }
+    .top nav a { margin-left: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .run, #after p { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <span>Yu-Ting Pan</span>
+    <nav>
+      <a href="#work">Work</a>
+      <a href="https://github.com/panyuti-ai">GitHub</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="ghost" aria-hidden="true">0</div>
+    <h1 class="big">I make AI<br><em>check</em> its work.</h1>
+    <span class="tag">Software engineer · Taiwan</span>
+    <p class="intro">I build tools that check whether AI-written work is actually right: citations, tests, builds, and the language it answers in. I work with Claude Code and Codex CLI every day, and use Go, Python and TypeScript.</p>
+  </div>
+
+  <section class="feature" id="work" aria-labelledby="zg">
+    <p class="kicker">Latest · Claude Code plugin</p>
+    <h2 id="zg"><a href="https://github.com/panyuti-ai/zhtw-guard">zhtw-guard</a></h2>
+    <p class="lede">Ask Claude in Traditional Chinese, paste in some Simplified text, and it sometimes answers in Simplified. zhtw-guard checks every reply and asks Claude to rewrite it. This is a real answer from my benchmark:</p>
+
+    <div class="demo">
+      <div class="box">
+        <small>CLAUDE WROTE</small>
+        <p><span class="s">将</span>土豆切<span class="s">块</span>。<br>用水煮十分<span class="s">钟</span>。<br>加入<span class="s">盐</span>和黑胡椒<span class="s">调</span>味。</p>
+      </div>
+      <button class="run" id="run" type="button" aria-controls="after">Run zhtw-guard →</button>
+      <div class="box" id="after" aria-live="polite">
+        <small>AFTER ONE REWRITE</small>
+        <p><span class="t">將</span>土豆切<span class="t">塊</span>。<br>用水煮十分<span class="t">鐘</span>。<br>加入<span class="t">鹽</span>和黑胡椒<span class="t">調</span>味。</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>15 → 0</b><span>Claude Haiku 5.5 answers written in Simplified, out of 300, without and with the plugin</span></div>
+      <div class="stat"><b>6 / 6</b><span>Sonnet 5.5 slips caught on the prompts where it failed; all 9 final answers clean</span></div>
+      <div class="stat"><b>1,200+</b><span>raw answers published, with the prompts and scoring code</span></div>
+    </div>
+    <p class="more">
+      <a href="https://github.com/panyuti-ai/zhtw-guard">Code</a>
+      <a href="https://github.com/panyuti-ai/zhtw-guard/tree/main/benchmark">Benchmark</a>
+    </p>
+  </section>
+
+  <section aria-labelledby="other">
+    <p class="kicker" id="other">More work</p>
+    <ul class="work">
+      <li>
+        <span class="n">02</span>
+        <div>
+          <h3><a href="https://github.com/panyuti-ai/citecheck">citecheck</a><span class="lang">Python</span></h3>
+          <p>Checks whether the pages cited in an AI-written answer actually support its claims. Fetches each page, ranks passages with BM25, and has an LLM judge label every citation.</p>
+        </div>
+        <div class="fact">13 / 14<small>citations judged correctly (v2, hand-labeled set)</small></div>
+      </li>
+      <li>
+        <span class="n">03</span>
+        <div>
+          <h3><a href="https://github.com/panyuti-ai/ship-check-mods">ship-check-mods</a><span class="lang">JavaScript</span></h3>
+          <p>A Claude Code mod that shows which tests, builds and type checks really ran after Claude changed your code, and whether each result still matches the files on disk.</p>
+        </div>
+        <div class="fact">Bash + PowerShell<small>exit status read from both</small></div>
+      </li>
+      <li>
+        <span class="n">04</span>
+        <div>
+          <h3><a href="https://github.com/panyuti-ai/course-search">course-search</a><span class="lang">Node.js</span></h3>
+          <p>Course search and planner for Feng Chia University, with an official-syllabus crawler, AI syllabus summaries and a schedule planner. Express + PostgreSQL on Railway.</p>
+        </div>
+        <div class="fact">3,570<small>course sections</small></div>
+      </li>
+      <li>
+        <span class="n">05</span>
+        <div>
+          <h3><a href="https://github.com/panyuti-ai/cctp-bridge-monitor">cctp-bridge-monitor</a><span class="lang">Go</span></h3>
+          <p>A long-running service that tracks cross-chain USDC transfers over WebSocket, pairs related events across chains, resumes from checkpoints after a crash, and serves a live dashboard.</p>
+        </div>
+        <div class="fact">7<small>networks watched live</small></div>
+      </li>
+      <li>
+        <span class="n">06</span>
+        <div>
+          <h3><a href="https://github.com/panyuti-ai/ethernaut-writeups">ethernaut-writeups</a><span class="lang">Solidity</span></h3>
+          <p>Found and exploited the vulnerabilities in the Ethernaut smart contract security challenges, with a write-up for each.</p>
+        </div>
+        <div class="fact">28<small>challenges solved</small></div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="hi">
+    <p class="kicker">Contact</p>
+    <h2 class="big" id="hi">Say <em>hi</em>.</h2>
+    <a class="mail" href="mailto:panyouting1124@gmail.com">panyouting1124@gmail.com</a>
+  </section>
+
+  <footer>© 2026 Yu-Ting Pan · <a href="https://github.com/panyuti-ai">github.com/panyuti-ai</a></footer>
+</div>
+
+<script>
+  const run = document.getElementById('run');
+  const after = document.getElementById('after');
+  run.addEventListener('click', () => {
+    const done = after.classList.toggle('done');
+    run.textContent = done ? '↺ Show the slip again' : 'Run zhtw-guard →';
+  });
+</script>
+</body>
+</html>
