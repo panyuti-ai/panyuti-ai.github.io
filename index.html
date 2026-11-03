@@ -264,7 +264,7 @@
   const css = getComputedStyle(document.documentElement);
   const color = { idle: 'rgba(17,17,17,.12)', ok: css.getPropertyValue('--good').trim(), bad: css.getPropertyValue('--hot').trim() };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let checked = 0, frame = null;
+  let checked = 0, frame = null, pulse = null, phase = 0;
 
   function layout() {
     const width = canvas.clientWidth, size = width < 500 ? 7 : 10, gap = 2;
@@ -292,6 +292,25 @@
         ctx.fillRect(x, y, size, size);
       }
     }
+    if (checked >= SQUARES) {
+      // A ring around the changed square, so it is easy to find among the green ones.
+      const x = (CHANGED % cols) * (size + gap) + size / 2, y = Math.floor(CHANGED / cols) * (size + gap) + size / 2;
+      const grow = reduce ? 0.5 : (Math.sin(phase) + 1) / 2;
+      ctx.strokeStyle = color.bad;
+      ctx.lineWidth = 3;
+      ctx.globalAlpha = 1 - grow * 0.6;
+      ctx.beginPath();
+      ctx.arc(x, y, size * (1.4 + grow * 1.2), 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function startPulse() {
+    cancelAnimationFrame(pulse);
+    if (reduce) return;
+    const loop = (now) => { phase = now / 250; draw(); pulse = requestAnimationFrame(loop); };
+    pulse = requestAnimationFrame(loop);
   }
 
   function show() {
@@ -300,6 +319,7 @@
     if (checked >= SQUARES) {
       counter.innerHTML = `Checked all 22,404 answers: <b class="ok">22,403 the same</b>, <b class="bad">1 different</b>.`;
       found.hidden = false;
+      startPulse();
     } else {
       counter.innerHTML = `Checked ${answers.toLocaleString('en-US')} answers` + (bad ? ` · <b class="bad">1 different</b>` : '');
     }
@@ -308,6 +328,7 @@
 
   run.addEventListener('click', () => {
     cancelAnimationFrame(frame);
+    cancelAnimationFrame(pulse);
     found.hidden = true;
     if (reduce) { checked = SQUARES; show(); return; }
     const start = performance.now(), duration = 1800;
