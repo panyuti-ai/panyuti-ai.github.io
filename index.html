@@ -82,6 +82,7 @@
   .ba b { font-size: clamp(18px, 2.4vw, 24px); }
   .ba .now b { color: var(--hot); }
   .found .why { margin: 14px 0 0; color: #2a2723; max-width: 720px; }
+  .found .tech { margin: 10px 0 0; font-size: 14px; color: var(--muted); }
   .run {
     align-self: center; border: var(--line); background: var(--hot); color: #fff; font: inherit; font-weight: 900;
     font-size: 18px; padding: 14px 18px; cursor: pointer; box-shadow: 5px 5px 0 var(--ink);
@@ -171,12 +172,13 @@
 
     <div class="found" id="found" hidden>
       <small>1 ANSWER CHANGED</small>
-      <p class="q">Put <code>'a'</code> between the items of an empty list: <code>interpose('a', [])</code></p>
+      <p class="q"><code>interpose</code> puts a value between the items of a list: <code>1, 2, 3</code> → <code>1, a, 2, a, 3</code>.<br>Given an empty list, it has nothing to give back, so it hands back an empty bag:</p>
       <div class="ba">
-        <div><span>Before</span><b>an empty <code>list_iterator</code></b></div>
-        <div class="now"><span>After the AI's edit</span><b>an empty <code>itertools.chain</code></b></div>
+        <div><span>Before</span><b>an empty paper bag</b></div>
+        <div class="now"><span>After the AI's edit</span><b>an empty plastic bag</b></div>
       </div>
-      <p class="why">Both are empty, so nothing breaks today, but code that checks the type would. Claude's tests and its own 17,000 random checks missed it. With the runsnap plugin, Claude saw this and put the original code back.</p>
+      <p class="why">The bag is still empty, so nothing breaks today. But code that checks “is this a paper bag?” would break. Claude's tests and its own 17,000 random checks missed it. With the runsnap plugin, Claude saw it and put the original code back.</p>
+      <p class="tech">In code: <code>interpose('a', [])</code> returned a <code>list_iterator</code>, and now returns an <code>itertools.chain</code>.</p>
     </div>
 
     <div class="stats">
