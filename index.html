@@ -63,9 +63,25 @@
   .box p { margin: 0; font-size: clamp(22px, 3vw, 30px); font-weight: 800; line-height: 1.35; }
   .box .s { color: var(--hot); text-decoration: line-through; text-decoration-thickness: 3px; }
   .box .t { color: var(--good); }
-  .box p.code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: clamp(17px, 2.2vw, 22px); font-weight: 700; }
-  .box .label { color: var(--muted); font-weight: 600; }
-  .box .hot { color: var(--hot); }
+  .check { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; }
+  .said { border: var(--line); background: #fff; padding: 14px 18px; flex: 1 1 320px; }
+  .said small, .found small { display: block; font-size: 12px; font-weight: 800; letter-spacing: .16em; color: var(--muted); margin-bottom: 6px; }
+  .said p { margin: 0; font-size: clamp(20px, 2.6vw, 26px); font-weight: 800; }
+  .grid-wrap { margin-top: 20px; border: var(--line); background: #fff; padding: 14px; }
+  #grid { display: block; width: 100%; height: auto; }
+  .counter { margin: 10px 0 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .counter b.bad { color: var(--hot); }
+  .counter b.ok { color: var(--good); }
+  .found { margin-top: 16px; border: var(--line); border-color: var(--hot); background: #fff; padding: 18px; box-shadow: 6px 6px 0 var(--hot); }
+  .found small { color: var(--hot); }
+  .found code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .92em; }
+  .found .q { margin: 0 0 14px; font-size: clamp(18px, 2.3vw, 22px); font-weight: 700; }
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .ba > div { border-top: var(--line); padding-top: 8px; }
+  .ba span { display: block; font-size: 13px; font-weight: 800; color: var(--muted); }
+  .ba b { font-size: clamp(18px, 2.4vw, 24px); }
+  .ba .now b { color: var(--hot); }
+  .found .why { margin: 14px 0 0; color: #2a2723; max-width: 720px; }
   .run {
     align-self: center; border: var(--line); background: var(--hot); color: #fff; font: inherit; font-weight: 900;
     font-size: 18px; padding: 14px 18px; cursor: pointer; box-shadow: 5px 5px 0 var(--ink);
@@ -102,6 +118,7 @@
 
   @media (max-width: 760px) {
     .demo { grid-template-columns: 1fr; }
+    .ba { grid-template-columns: 1fr; }
     .run { justify-self: start; }
     .stats { grid-template-columns: 1fr; }
     .work li { grid-template-columns: 56px 1fr; }
@@ -137,18 +154,29 @@
   <section class="feature" id="work" aria-labelledby="rs">
     <p class="kicker">Latest · Python tool + Claude Code plugin</p>
     <h2 id="rs"><a href="https://github.com/panyuti-ai/runsnap">runsnap</a></h2>
-    <p class="lede">Passing tests don't prove a change kept behavior. runsnap records what every function returns while your tests run, and after an AI edit lists the calls that now return something different. Here Claude Code refactored toolz, ran its 187 tests plus 17,000 random comparisons of its own, and reported no change:</p>
+    <p class="lede">When an AI cleans up code, the code is supposed to change, but the answers it gives are not. runsnap writes down every answer your functions give while the tests run, then checks each one again after the AI's edit. Here Claude Code tidied up the toolz library:</p>
 
-    <div class="demo">
-      <div class="box">
+    <div class="check">
+      <div class="said">
         <small>CLAUDE SAID</small>
-        <p>Refactor done.<br>187 tests pass.<br>Behavior unchanged.</p>
+        <p>“Done. All 187 tests pass. Nothing changed.”</p>
       </div>
-      <button class="run" id="run" type="button" aria-controls="after">Run runsnap →</button>
-      <div class="box" id="after" aria-live="polite">
-        <small>RUNSNAP FOUND</small>
-        <p class="code">interpose('a', [])<br><span class="label">before</span> list_iterator<br><span class="label">now</span> <span class="hot">itertools.chain</span></p>
+      <button class="run" id="run" type="button" aria-controls="grid-wrap">Check every answer →</button>
+    </div>
+
+    <div class="grid-wrap" id="grid-wrap">
+      <canvas id="grid" role="img" aria-label="1,121 squares, one for every 20 compared answers. After the check, all are green except one red square."></canvas>
+      <p class="counter" id="counter" aria-live="polite">toolz's tests gave 22,404 answers that can be compared before and after the edit. Each square is 20 of them.</p>
+    </div>
+
+    <div class="found" id="found" hidden>
+      <small>1 ANSWER CHANGED</small>
+      <p class="q">Put <code>'a'</code> between the items of an empty list: <code>interpose('a', [])</code></p>
+      <div class="ba">
+        <div><span>Before</span><b>an empty <code>list_iterator</code></b></div>
+        <div class="now"><span>After the AI's edit</span><b>an empty <code>itertools.chain</code></b></div>
       </div>
+      <p class="why">Both are empty, so nothing breaks today, but code that checks the type would. Claude's tests and its own 17,000 random checks missed it. With the runsnap plugin, Claude saw this and put the original code back.</p>
     </div>
 
     <div class="stats">
@@ -227,12 +255,72 @@
 </div>
 
 <script>
+  // One square per 20 of the 22,404 answers toolz's tests gave both before and after the edit; one changed.
+  const TOTAL = 22404, PER = 20, SQUARES = Math.ceil(TOTAL / PER), CHANGED = 731;
+  const canvas = document.getElementById('grid');
+  const counter = document.getElementById('counter');
+  const found = document.getElementById('found');
   const run = document.getElementById('run');
-  const after = document.getElementById('after');
+  const css = getComputedStyle(document.documentElement);
+  const color = { idle: 'rgba(17,17,17,.12)', ok: css.getPropertyValue('--good').trim(), bad: css.getPropertyValue('--hot').trim() };
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let checked = 0, frame = null;
+
+  function layout() {
+    const width = canvas.clientWidth, size = width < 500 ? 7 : 10, gap = 2;
+    const cols = Math.floor((width + gap) / (size + gap));
+    const rows = Math.ceil(SQUARES / cols);
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = width * ratio;
+    canvas.height = (rows * (size + gap) - gap) * ratio;
+    canvas.style.height = (rows * (size + gap) - gap) + 'px';
+    return { size, gap, cols, ratio };
+  }
+  let geo = layout();
+
+  function draw() {
+    const ctx = canvas.getContext('2d');
+    const { size, gap, cols, ratio } = geo;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < SQUARES; i++) {
+      ctx.fillStyle = i >= checked ? color.idle : i === CHANGED ? color.bad : color.ok;
+      const x = (i % cols) * (size + gap), y = Math.floor(i / cols) * (size + gap);
+      if (i === CHANGED && checked > i) {
+        ctx.fillRect(x - 2, y - 2, size + 4, size + 4);
+      } else {
+        ctx.fillRect(x, y, size, size);
+      }
+    }
+  }
+
+  function show() {
+    const answers = Math.min(TOTAL, checked * PER);
+    const bad = checked > CHANGED ? 1 : 0;
+    if (checked >= SQUARES) {
+      counter.innerHTML = `Checked all 22,404 answers: <b class="ok">22,403 the same</b>, <b class="bad">1 different</b>.`;
+      found.hidden = false;
+    } else {
+      counter.innerHTML = `Checked ${answers.toLocaleString('en-US')} answers` + (bad ? ` · <b class="bad">1 different</b>` : '');
+    }
+    draw();
+  }
+
   run.addEventListener('click', () => {
-    const done = after.classList.toggle('done');
-    run.textContent = done ? '↺ Hide it again' : 'Run runsnap →';
+    cancelAnimationFrame(frame);
+    found.hidden = true;
+    if (reduce) { checked = SQUARES; show(); return; }
+    const start = performance.now(), duration = 1800;
+    const step = (now) => {
+      checked = Math.round(Math.min(1, (now - start) / duration) * SQUARES);
+      show();
+      if (checked < SQUARES) frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    run.textContent = '↺ Check again';
   });
+  addEventListener('resize', () => { geo = layout(); draw(); });
+  draw();
 </script>
 </body>
 </html>
