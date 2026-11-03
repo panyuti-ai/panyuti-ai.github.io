@@ -63,6 +63,9 @@
   .box p { margin: 0; font-size: clamp(22px, 3vw, 30px); font-weight: 800; line-height: 1.35; }
   .box .s { color: var(--hot); text-decoration: line-through; text-decoration-thickness: 3px; }
   .box .t { color: var(--good); }
+  .box p.code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: clamp(17px, 2.2vw, 22px); font-weight: 700; }
+  .box .label { color: var(--muted); font-weight: 600; }
+  .box .hot { color: var(--hot); }
   .run {
     align-self: center; border: var(--line); background: var(--hot); color: #fff; font: inherit; font-weight: 900;
     font-size: 18px; padding: 14px 18px; cursor: pointer; box-shadow: 5px 5px 0 var(--ink);
@@ -128,34 +131,35 @@
     <div class="ghost" aria-hidden="true">0</div>
     <h1 class="big">I make AI<br><em>check</em> its work.</h1>
     <span class="tag">Software engineer · Taiwan</span>
-    <p class="intro">I build tools that check whether AI-written work is actually right: citations, tests, builds, and the language it answers in. I work with Claude Code and Codex CLI every day, and use Go, Python and TypeScript.</p>
+    <p class="intro">I build tools that check whether AI-written work is actually right: what the code returns, citations, tests, builds, and the language it answers in. I work with Claude Code and Codex CLI every day, and use Go, Python and TypeScript.</p>
   </div>
 
-  <section class="feature" id="work" aria-labelledby="zg">
-    <p class="kicker">Latest · Claude Code plugin</p>
-    <h2 id="zg"><a href="https://github.com/panyuti-ai/zhtw-guard">zhtw-guard</a></h2>
-    <p class="lede">Ask Claude in Traditional Chinese, paste in some Simplified text, and it sometimes answers in Simplified. zhtw-guard checks every reply and asks Claude to rewrite it. This is a real answer from my benchmark:</p>
+  <section class="feature" id="work" aria-labelledby="rs">
+    <p class="kicker">Latest · Python tool + Claude Code plugin</p>
+    <h2 id="rs"><a href="https://github.com/panyuti-ai/runsnap">runsnap</a></h2>
+    <p class="lede">Passing tests don't prove a change kept behavior. runsnap records what every function returns while your tests run, and after an AI edit lists the calls that now return something different. Here Claude Code refactored toolz, ran its 187 tests plus 17,000 random comparisons of its own, and reported no change:</p>
 
     <div class="demo">
       <div class="box">
-        <small>CLAUDE WROTE</small>
-        <p><span class="s">将</span>土豆切<span class="s">块</span>。<br>用水煮十分<span class="s">钟</span>。<br>加入<span class="s">盐</span>和黑胡椒<span class="s">调</span>味。</p>
+        <small>CLAUDE SAID</small>
+        <p>Refactor done.<br>187 tests pass.<br>Behavior unchanged.</p>
       </div>
-      <button class="run" id="run" type="button" aria-controls="after">Run zhtw-guard →</button>
+      <button class="run" id="run" type="button" aria-controls="after">Run runsnap →</button>
       <div class="box" id="after" aria-live="polite">
-        <small>AFTER ONE REWRITE</small>
-        <p><span class="t">將</span>土豆切<span class="t">塊</span>。<br>用水煮十分<span class="t">鐘</span>。<br>加入<span class="t">鹽</span>和黑胡椒<span class="t">調</span>味。</p>
+        <small>RUNSNAP FOUND</small>
+        <p class="code">interpose('a', [])<br><span class="label">before</span> list_iterator<br><span class="label">now</span> <span class="hot">itertools.chain</span></p>
       </div>
     </div>
 
     <div class="stats">
-      <div class="stat"><b>15 → 0</b><span>Claude Haiku 5.5 answers written in Simplified, out of 300, without and with the plugin</span></div>
-      <div class="stat"><b>6 / 6</b><span>Sonnet 5.5 slips caught on the prompts where it failed; all 9 final answers clean</span></div>
-      <div class="stat"><b>1,200+</b><span>raw answers published, with the prompts and scoring code</span></div>
+      <div class="stat"><b>8 / 8</b><span>refactors by Claude Code and Codex passed every test in humanize, slugify and toolz</span></div>
+      <div class="stat"><b>2</b><span>of them changed what a function returns, which no test checks; runsnap flagged both</span></div>
+      <div class="stat"><b>1 turn</b><span>with the plugin, Claude saw the change and put the original code back</span></div>
     </div>
     <p class="more">
-      <a href="https://github.com/panyuti-ai/zhtw-guard">Code</a>
-      <a href="https://github.com/panyuti-ai/zhtw-guard/tree/main/benchmark">Benchmark</a>
+      <a href="https://github.com/panyuti-ai/runsnap">Code</a>
+      <a href="https://github.com/panyuti-ai/runsnap/tree/main/eval">Experiments</a>
+      <a href="https://github.com/panyuti-ai/runsnap/tree/main/eval/results/plugin-demo">Plugin demo</a>
     </p>
   </section>
 
@@ -165,13 +169,21 @@
       <li>
         <span class="n">02</span>
         <div>
+          <h3><a href="https://github.com/panyuti-ai/zhtw-guard">zhtw-guard</a><span class="lang">JavaScript</span></h3>
+          <p>A Claude Code plugin that checks every reply for Simplified Chinese and stray Japanese or Korean, and asks Claude to rewrite it once. Benchmark with 1,200+ raw answers published.</p>
+        </div>
+        <div class="fact">15 → 0<small>Simplified answers out of 300, Haiku 5.5, without and with the plugin</small></div>
+      </li>
+      <li>
+        <span class="n">03</span>
+        <div>
           <h3><a href="https://github.com/panyuti-ai/citecheck">citecheck</a><span class="lang">Python</span></h3>
           <p>Checks whether the pages cited in an AI-written answer actually support its claims. Fetches each page, ranks passages with BM25, and has an LLM judge label every citation.</p>
         </div>
         <div class="fact">13 / 14<small>citations judged correctly (v2, hand-labeled set)</small></div>
       </li>
       <li>
-        <span class="n">03</span>
+        <span class="n">04</span>
         <div>
           <h3><a href="https://github.com/panyuti-ai/ship-check-mods">ship-check-mods</a><span class="lang">JavaScript</span></h3>
           <p>A Claude Code mod that shows which tests, builds and type checks really ran after Claude changed your code, and whether each result still matches the files on disk.</p>
@@ -179,7 +191,7 @@
         <div class="fact">Bash + PowerShell<small>exit status read from both</small></div>
       </li>
       <li>
-        <span class="n">04</span>
+        <span class="n">05</span>
         <div>
           <h3><a href="https://github.com/panyuti-ai/course-search">course-search</a><span class="lang">Node.js</span></h3>
           <p>Course search and planner for Feng Chia University, with an official-syllabus crawler, AI syllabus summaries and a schedule planner. Express + PostgreSQL on Railway.</p>
@@ -187,7 +199,7 @@
         <div class="fact">3,570<small>course sections</small></div>
       </li>
       <li>
-        <span class="n">05</span>
+        <span class="n">06</span>
         <div>
           <h3><a href="https://github.com/panyuti-ai/cctp-bridge-monitor">cctp-bridge-monitor</a><span class="lang">Go</span></h3>
           <p>A long-running service that tracks cross-chain USDC transfers over WebSocket, pairs related events across chains, resumes from checkpoints after a crash, and serves a live dashboard.</p>
@@ -195,7 +207,7 @@
         <div class="fact">7<small>networks watched live</small></div>
       </li>
       <li>
-        <span class="n">06</span>
+        <span class="n">07</span>
         <div>
           <h3><a href="https://github.com/panyuti-ai/ethernaut-writeups">ethernaut-writeups</a><span class="lang">Solidity</span></h3>
           <p>Found and exploited the vulnerabilities in the Ethernaut smart contract security challenges, with a write-up for each.</p>
@@ -219,7 +231,7 @@
   const after = document.getElementById('after');
   run.addEventListener('click', () => {
     const done = after.classList.toggle('done');
-    run.textContent = done ? '↺ Show the slip again' : 'Run zhtw-guard →';
+    run.textContent = done ? '↺ Hide it again' : 'Run runsnap →';
   });
 </script>
 </body>
